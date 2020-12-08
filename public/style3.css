@@ -1,0 +1,16 @@
+a:hover {
+ text-decoration: none;
+}
+
+#friendship{
+  
+   font-size : 28px; 
+   line-height-step : 30px;
+}
+@media only screen and (max-width: 600px){
+
+ #friendship{
+   font-size: 20px !important;
+   line-height-step : 30px;
+  }
+}

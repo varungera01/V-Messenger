@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <link rel = "stylesheet" href = "/style5.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <title>V'Messenger</title>
+  </head>
+  <body>
+    
+    <div class = "container-fluid">
+    <ul class="nav d-flex flex-row ml-1 mr-1 pl-3 pr-3 pt-2 pb-2">
+      <li class="nav-item pr-3">
+        <a class="nav-link" href="/chatlist"><i class="fa fa-arrow-left fa-lg pr-3" aria-hidden="true"></i>
+          <img id = "dp"style = "width : 40px; border : 2px solid black; border-radius : 20px;" src = "https://www.pngitem.com/pimgs/m/78-786314_computer-user-icon-peolpe-avatar-group-people-avatar.png">
+          <%= receiver %>
+        </a>
+      </li>
+     <!---- <img id = "dp"style = "width : 40px; border : 2px solid black; border-radius : 20px;" src = "https://www.pngitem.com/pimgs/m/78-786314_computer-user-icon-peolpe-avatar-group-people-avatar.png">
+     -->
+      <p id = "typing" style = "color : white;  font-size : 12px; font-family : Microsoft JhengHei;" class = "typing"></p>
+      
+    </ul>
+    </div>
+
+    <div class = "container-fluid">
+      <div class = "message-area  ml-1 mr-1 pl-3 pr-5 mt-1 pb-2">
+      
+    <!----   <div class = "incoming message"></div>
+
+
+        <div class = "outgoing message"></div>-->
+
+        
+       </div>
+       <textarea  class = "mr-2 ml-2 pl-4 pt-2 mt-2 pb-1" id = "textarea" cols = "30" rows = "1" placeholder = "Type a message"></textarea>
+<!--<button id = "send" type = "button"  class="btn btn-primary pl-2 pr-2 pt-1 pb-1">send</button>
+-->
+<button style = "border  : 2px solid transparent; border-radius : 70%;" type = "button"  class="btn btn-primary pl-2 pr-2 pt-1 pb-1 send"><i class="fa fa-paper-plane-o send" aria-hidden="true"></i></button>    
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.6.0/qs.min.js"></script>
+    <script src = "/socket.io/socket.io.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/simple-crypto-js@2.5.0/dist/SimpleCrypto.min.js"></script> 
+ <!----  <script src = "https://cdn.jsdelivr.net/npm/emoji-button@latest/dist/index.min.js"></script>-->
+    
+
+  <script>
+    //  import { EmojiButton } from '@joeattardi/emoji-button';
+
+    //  let trigger = document.querySelector('#emoji-trigger');
+      
+      let textarea = document.querySelector('#textarea');
+      let messageArea = document.querySelector('.message-area');
+      let send_button = document.querySelector('.send');
+      let typer =  document.querySelector('.typing');
+      const { room , receiver }  = Qs.parse(location.search , { ignoreQueryPrefix : true});
+      let name =  <%- (name) %>;
+      let senderId = <%- (senderId) %>;
+      console.log(senderId);
+      
+      console.log(room , receiver);
+
+      let time = new Date().getTime();
+    
+      const secretKey = "Mumbai-dELHi-HYDERabad-PraTVarsiNGe";
+
+   /*   const simpleCrypto = new SimpleCrypto(secretKey);
+
+      const plainText = "Hello World!"
+       const cipherText = simpleCrypto.encrypt(plainText);
+       console.log(cipherText);*/
+      
+        //  //  S O C K E T S // // 
+  
+    const socket = io("localhost:3000" , {
+    reconnectionDelayMax: 10000,
+    query : {
+        room : room,
+        receiver : receiver
+          }
+    });
+
+  /*  socket.emit('join',  room , (error) => {
+           console.log(err);
+    });*/
+   
+  
+
+textarea.addEventListener('keyup' , (e) => {
+
+
+    if(e.key === 'Enter'){
+
+     if(e.target.value === "")
+      {
+        console.log('enter message');
+       
+      }
+     else{
+        sendMessage(e.target.value);
+     }
+  }
+});
+
+send_button.addEventListener('click' , ()=> {
+
+console.log('clicked');
+input_val = textarea.value;
+sendMessage(input_val);
+
+
+}); 
+textarea.addEventListener("keypress" ,() => {
+      if(e.key !== 'Enter') {
+        typing  = true;
+        socket.emit('g_typing', {
+          user : name,
+          typing  :true,
+          senderId : room,
+          receiverId : receiver,
+        });
+        clearTimeout(timeout);
+        timeout=setTimeout(typingTimeout, 1500);
+
+      }
+      else{
+        clearTimeout(timeout);
+        typingTimeout();
+      }
+    });
+
+      function typingTimeout(){
+    typing=false
+    socket.emit('typing', {
+      user : name,
+         typing:false,
+        senderId : room,
+          receiverId : receiver
+        });
+}
+
+/*textarea.addEventListener("keypress" ,() => {
+
+    socket.emit('typing'  , {
+        name : name
+
+    });
+});*/
+
+
+
+
+ function sendMessage(message){
+
+    let msg = {
+        senderId : senderId,
+        receiverId : receiver,
+        user : name,
+        message : message.trim(),
+        createdAt: moment(time).format('h:mm a')
+    };
+
+    appendMessage(msg , 'outgoing');
+
+    scrollToBottom();
+
+    textarea.value = ' ';
+
+    textarea.placeholder = "Type a message";
+
+   socket.emit('g_message' ,msg , (error)=> {
+      if(error)
+        return console.log(err);
+
+        console.log(msg);
+    
+      console.log('message delieverd');
+      textarea.placeholder = "Type a message";
+
+    });
+      
+    
+    
+         
+    
+
+}
+///////////////////////////////////////////////////////
+
+function appendMessage(message , type){
+
+  let x;
+    if(type === 'outgoing')
+       {
+         x = 'me';
+       }
+       else{
+         x = message.user;
+       }
+
+    let mainDiv = document.createElement('div');
+
+    let className = type;
+    
+
+    mainDiv.classList.add(className , 'message');
+
+    let markup = `
+      
+    <p>  ${message.message}<br>
+      <span style = "font-size : 11px; float : right;"> ${message.createdAt}</span>
+      <span style = "font-size : 11px; right;padding-right : 5px;"> ${x}</span></p>
+    `
+  // <h5>${message.user}</h5>
+    mainDiv.innerHTML = markup;
+
+    messageArea.append(mainDiv);  
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+
+
+socket.on('g_message' , (msg) => {
+  console.log(msg);
+      appendMessage(msg , 'incoming');
+      scrollToBottom();
+});
+
+socket.on('g_typing' , (data) => {
+    
+    if(data.typing=== true){
+      typer.innerHTML = data.user + ' is typing..';
+       }
+       else{
+        typer.innerHTML = ' ';
+       }
+      
+  });
+
+
+/*socket.on('typing' , (name) => {
+    console.log(name + ' is typing');
+});*/
+
+function scrollToBottom(){
+
+    messageArea.scrollTop = messageArea.scrollHeight;
+}
+     </script>
+
+
+   
+
+
+
+
+
+
+
+  <!----  <script src="ejs.js"></script>-->
+    <script src = "/socket.io/socket.io.js"></script>
+  <!----  <script src = "/client.js"></script>--->
+    
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+
+    
+  </body>
+</html>

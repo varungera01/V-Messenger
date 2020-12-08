@@ -1,0 +1,336 @@
+<!---<!doctype html>
+<html lang="en">
+  <head>
+     Required meta tags 
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    Bootstrap CSS 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <link rel = "stylesheet" href = "/style.css">
+
+
+    <title>Chat</title>
+  </head>
+  <body>
+     
+        <section class = "chat__section">
+          <div class = "container-fluid border border-secondary">
+       <div class = "brand">
+              <h1>Chat</h1>
+        </div>
+     
+          </div>
+        <div class = "message__area">
+
+        </div>
+    <div>
+        <textarea id = "textarea" cols = "30" rows = "1" placeholder = "write your message here"></textarea>
+    </div>
+    </section>
+  
+    <script src = "/socket.io/socket.io.js"></script>
+    <script src = "/client.js"></script>
+    
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+
+    
+  </body>
+</html>-->
+
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <link rel = "stylesheet" href = "/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <title>V'Messenger</title>
+  </head>
+  <body>
+    
+    <div class = "container-fluid">
+    <ul class="nav d-flex flex-row ml-2 mr-2 pl-3 pr-3 pt-2 pb-3">
+      <li class="nav-item pr-3">
+        <a class="nav-link" href="/chatlist"><i class="fa fa-arrow-left fa-lg pr-1" aria-hidden="true"></i>
+        <img id = "dp"style = "width : 40px; border : 2px solid black; border-radius : 20px;" src = "<%= avatar %>">
+          <%= receiver %></a>
+        
+        <p id = "typing" style = "color : white;  font-size : 12px; font-family : Microsoft JhengHei;" class = "typing"></p>
+      </li>
+      
+    </ul>
+    </div>
+
+    <div class = "container-fluid">
+      <div class = "message-area  ml-2 mr-2 pl-3 pr-5 mt-1 pb-4">
+      
+    <!----   <div class = "incoming message"></div>
+
+
+        <div class = "outgoing message"></div>-->
+
+        
+       </div>
+      <!--<p style = "color : white; font-size : 13px; margin-left : 70px;" class = "typing"></p>-->
+       <textarea  class = "mr-2 ml-2 pl-4 pt-2 mt-2 pb-1" id = "textarea" cols = "30" rows = "1" placeholder = "Type a message"></textarea>
+       <button style = "border  : 2px solid transparent; border-radius : 70%;" type = "button"  class="btn btn-primary pl-2 pr-2 pt-1 pb-1 send"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.6.0/qs.min.js"></script>
+    <script src = "/socket.io/socket.io.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/simple-crypto-js@2.5.0/dist/SimpleCrypto.min.js"></script>
+   <script src="http://code.jquery.com/jquery-1.4.4.js"></script>
+   <!---- <script src="jquery-3.5.1.min.js"></script>-
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src = "https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>--->
+
+<script>
+      let textarea = document.querySelector('#textarea');
+      let messageArea = document.querySelector('.message-area');
+      let send_button = document.querySelector(".send");
+      const { room , receiver }  = Qs.parse(location.search , { ignoreQueryPrefix : true});
+      let name =  '<%- JSON.stringify(name) %>';
+      console.log(name);
+      console.log(room , receiver);
+    /*  const secretKey = "Mumbai-dELHi-HYDERabad-PraTVarsiNGe";
+       const simpleCrypto = new SimpleCrypto(secretKey);
+       /*const plainText = "Hello World!"
+       const cipherText = simpleCrypto.encrypt(plainText);
+       console.log(cipherText);*/
+  
+      //  //  S O C K E T S // // 
+      let time = new Date().getTime();
+      let  typer = document.querySelector('.typing');
+  
+    const socket = io("localhost:3000" , {
+    reconnectionDelayMax: 10000,
+    query : {
+        room : room,
+        receiver : receiver
+          }
+    });
+   
+     textarea.addEventListener('keyup' , (e) => {
+
+    if(e.key === 'Enter')
+        sendMessage(e.target.value);
+     });
+     var timeout = undefined;
+
+    textarea.addEventListener("keypress" ,() => {
+      if(e.key !== 'Enter') {
+        typing  = true;
+        socket.emit('typing', {
+          typing  :true,
+          senderId : room,
+          receiverId : receiver,
+        });
+        clearTimeout(timeout);
+        timeout=setTimeout(typingTimeout, 1500);
+
+      }
+      else{
+        clearTimeout(timeout);
+        typingTimeout();
+      }
+   });
+
+
+   function typingTimeout(){
+    typing=false
+    socket.emit('typing', {
+         typing:false,
+        senderId : room,
+          receiverId : receiver
+        });
+}
+
+send_button.addEventListener('click' , ()=> {
+
+         console.log('clicked');
+         input_val = textarea.value;
+         sendMessage(input_val);
+         console.log('chutiya');
+         socket.emit("send_notifications" , name , (err) => {
+           if(err)
+              console.log(err);
+            console.log(name);
+      });
+      
+}); 
+
+/*textarea.addEventListener("keypress" ,() => {
+
+    socket.emit('typing'  , {
+        name : name
+
+    });
+});*/
+
+
+
+function sendMessage(message){
+
+  
+
+    let msg = {
+        senderId : room,
+        receiverId : receiver,
+        user : name,
+        message : message.trim(),
+        createdAt: moment(time).format('h:mm a')
+       
+    };
+
+    appendMessage(msg , 'outgoing');
+
+   // const sms = msg.message;
+   // const e_message =  simpleCrypto.encrypt(sms);
+   // msg.message = e_message;
+
+    scrollToBottom();
+
+    textarea.value = ' ';
+
+
+
+    socket.emit('message' ,msg , (error)=> {
+      if(error)
+        return conssole.log(err);
+
+        console.log(msg);
+    
+      console.log('message delieverd');
+
+    });
+
+    }
+///////////////////////////////////////////////////////
+
+function appendMessage(message , type){
+
+ 
+    let mainDiv = document.createElement('div');
+
+    let className = type;
+
+    mainDiv.classList.add(className , 'message');
+
+    let markup = `
+     
+      <p>${message.message}
+     <span style = "font-size :11px; float : right; padding-bottom : 0;"> ${message.createdAt}</span></p>
+     
+      
+
+    `
+  // <h5>${message.user}</h5>
+    mainDiv.innerHTML = markup;
+    messageArea.append(mainDiv);  
+}
+
+
+function appendsMessage(message , create , type){
+
+ 
+let mainDiv = document.createElement('div');
+
+let className = type;
+
+mainDiv.classList.add(className , 'message');
+
+let markup = `
+ 
+  <p>${message}
+    <span style = "font-size :11px; float : right; padding-bottom : 0;"> ${create}</span></p>
+
+`
+// <h5>${message.user}</h5>
+mainDiv.innerHTML = markup;
+
+messageArea.append(mainDiv);  
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+
+socket.on('load old messages' , (docs)=> {
+    
+   for(let i = 0; i<docs.length;i++)
+        {
+          if(docs[i].me)
+            appendsMessage(docs[i].me , docs[i].createdAt  , 'outgoing');
+          else
+          appendsMessage(docs[i].receiver,docs[i].createdAt, 'incoming');
+        }
+        scrollToBottom();
+});
+
+
+
+socket.on('message' , (msg) => {
+    
+    //  const sms = msg.message;
+    //   msg.message = simpleCrypto.decrypt(sms);
+      appendMessage(msg , 'incoming');
+      scrollToBottom();
+});
+
+socket.on("send_notifications" , (name)=>{
+      alert('message from' + name);
+});
+
+
+function scrollToBottom(){
+       messageArea.scrollTop = messageArea.scrollHeight;
+}
+
+
+
+/*textarea.addEventListener("keypress" ,() => {
+
+  socket.emit('typing'  , {
+      name : name
+
+  });
+});*/
+ 
+
+socket.on('typing' , (data) => {
+    
+    if(data.typing=== true){
+      typer.innerHTML = 'typing...';
+       }
+       else{
+        typer.innerHTML = ' ';
+       }
+      
+  });
+
+
+     
+     </script>
+
+
+   <!----  <script src="ejs.js"></script>-->
+    <script src = "/socket.io/socket.io.js"></script>
+  <!----  <script src = "/client.js"></script>--->
+    
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+
+    
+  </body>
+</html>
+

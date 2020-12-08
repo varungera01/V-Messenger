@@ -1,0 +1,281 @@
+* {
+    margin : 0 !important;
+    padding : 0 !important;
+}
+
+.nav {
+
+background-color:  #05B8CC	;
+color : black;
+border : 1px solid transparent;
+
+font-family: 'Microsoft Sans Serif';
+
+}
+#dp{
+    position : relative;
+}
+
+#typing{
+ position : absolute;
+ left : 100px;
+ top : 35px;
+}
+.nav .nav-item  a {
+    color : white;
+    font-size : 20px;
+    font-weight : 500;
+}
+
+.message-area{
+
+    
+     
+     height : 70vh;
+     border : 2px solid #DAD7D7	;
+    
+     display : flex;
+     flex-direction : column;
+     overflow-y: auto;
+}
+
+#textarea{
+   width : 65%;
+   border : 2px solid #DAD7D7;
+   border-radius : 7px;
+   resize:  none;
+   overflow-x: auto;
+  
+}
+
+textarea:focus{
+    outline : none;
+}
+
+.message {
+    padding-left : 25px !important;
+    padding-right : 10px !important;
+    border-radius : 5px;
+    margin-top : 50px !important;
+    margin-bottom : 40px;
+    width : 400px;
+    position : relative;
+    
+    
+}
+
+ .incoming {
+ 
+    background : lightgreen;
+    color:  black;
+    font-size : 20px;
+    font-weight : 600 !important;
+    padding-top : 5px !important;
+    padding-bottom: 5px !important;
+    
+    overflow-wrap: break-word;
+     word-wrap: break-word;
+  
+    
+
+   
+}
+
+ .outgoing {
+
+    padding-right : 20px !important;
+    margin-left : auto !important;
+    font-size : 20px;
+    font-weight : 600 !important;
+    background : skyblue;
+    color : black;
+    padding-top : 5px !important;
+    padding-bottom: 5px !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  
+    
+}
+
+.message h5 {
+    position : absolute !important;
+    top : -27px !important;
+    right : -5px !important;
+     bottom : -10px;
+    float : right !important;
+    color : #333;
+    font-size: 14px !important;
+}
+
+.message h4 {
+    position : absolute !important;
+    top : 48px !important;
+    font-weight : 600;
+    right : -5px !important;
+     bottom : -10px;
+    float : right !important;
+    color : #333;
+    font-size: 11px !important;
+}
+
+
+
+@media only screen and (max-width: 600px) {
+
+    .nav .nav-item  a {
+        color : white;
+        font-size : 16px;
+       
+    }
+
+    .message-area {
+        padding-right : 25px !important;
+    }
+    
+    .message{
+        padding-left : 20px !important;
+    
+        border-radius : 3px;
+        margin-top : 50px !important;
+        margin-bottom : 20px;
+        width : 200px;
+        position : relative;
+        
+        
+    }
+
+    .incoming {
+ 
+        background : lightgreen;
+        color:  black;
+        font-size : 16px;
+        font-weight : 600 !important;
+        padding-top : 2px !important;
+        padding-bottom: 2px !important;
+    
+       
+    }
+    
+     .outgoing {
+    
+        padding-right : 20px !important;
+        margin-left : auto !important;
+        
+        font-size : 16px;
+        font-weight : 600 !important;
+        background : skyblue;
+        color : black;
+        padding-top : 2px !important;
+        padding-bottom: 2px !important;
+    }
+
+    .message h5 {
+        position : absolute !important;
+        top : -22px !important;
+        right : -5px !important;
+         bottom : -10px;
+        float : right !important;
+        color : #333;
+        font-size: 11px !important;
+    }
+    .message h4 {
+        position : absolute !important;
+        top : 28px !important;
+        font-weight : 600;
+        right : -5px !important;
+         bottom : -10px;
+        float : right !important;
+        color : #333;
+        font-size: 11px !important;
+    }
+    
+  }
+
+
+/*  *{
+    padding : 0;
+    margin : 0;
+    
+}
+
+body {
+   /* display : flex;
+   /* align-items : center;*/
+    /*justify-content:  center;
+   
+      font-family: sans-serif;
+}
+
+ .chat__section {
+    
+    
+    background :   orange;
+}
+
+.brand {
+    padding : 10px;
+    background : skyblue;
+    display : flex;
+    align-items: center;
+
+}
+
+.brand h1{
+    text-transform: uppercase;
+    font-size: 20px;
+    color : white;
+    margin-left : 10px;
+
+}
+
+.message__area{
+    height : 500px;
+    padding : 16px;
+    display : flex;
+    flex-direction : column;
+    overflow-y: auto;
+    padding-top : 40px;
+    width : 900px; 
+}
+
+#textarea {
+
+    width : 100%;
+    border : none;
+    padding : 20px;
+    font-size : 16px;
+    outline : none;
+    background : pink;
+}
+
+.message {
+
+    padding : 20px;
+    border-radius : 4px;
+    margin-bottom : 40px;
+    max-width : 300px;
+    position : relative;
+
+}
+
+.incoming {
+    background : #8f88eb;
+    color:  #fff;
+
+}
+
+.outgoing {
+    background : yellow;
+    color : #787986;
+    margin-left: auto;
+}
+
+.message h4 {
+   position : absolute;
+   top : -20px;
+   left : 0;
+   color : #333;
+   font-size: 14px;
+
+}
+*/

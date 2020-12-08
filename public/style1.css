@@ -1,0 +1,49 @@
+
+
+img {
+    border-radius : 10px;
+    
+}
+
+img:hover {
+  transform : scale(1.5);
+  transition : all 0.7s;
+}
+
+#buttons{
+  margin-left : 22%;
+}
+.footer{
+  background-color: #0D4F8B	;
+  
+
+}
+
+.footer .list_items{
+  color : white;
+  font-size : 12px;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+#avatar {
+  width: 300px; 
+  border : 2px solid black;
+}
+
+@media only screen and (max-width: 600px) {
+   
+  #buttons{
+    margin-left : 2%;
+  }
+  #avatar {
+    width: 200px; 
+    border : 2px solid black;
+  }
+
+  
+  
+  #abc{
+    font-size: 13px !important;
+  }
+  
+
+}
